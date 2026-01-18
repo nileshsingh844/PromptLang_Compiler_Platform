@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CopyButton } from '@/components/ui/copy-button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { api, GenerateResponse } from '@/lib/api';
 import { Loader2 } from 'lucide-react';
 
@@ -37,41 +39,68 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-slate-900">PromptLang Compiler Platform</h1>
-          <p className="text-slate-600">Transform Human Input → PromptLang IR → Optimized IR → Model Dialect → Contract Enforced Output</p>
+        <div className="text-center space-y-4">
+          <div className="flex justify-between items-center max-w-4xl mx-auto">
+            <div className="flex-1"></div>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100 text-center">
+              PromptLang Compiler Platform
+            </h1>
+            <div className="flex-1 flex justify-end">
+              <ThemeToggle />
+            </div>
+          </div>
+          <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base max-w-3xl mx-auto">
+            Transform Human Input → PromptLang IR → Optimized IR → Model Dialect → Contract Enforced Output
+          </p>
         </div>
 
         {/* Input Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Input</CardTitle>
+        <Card className="shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+            <CardTitle className="text-slate-800 dark:text-slate-100">
+              Create Your Project
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Enter your request here..."
-              className="w-full min-h-[120px] p-4 border rounded-md resize-y font-mono text-sm"
-            />
-            <div className="flex gap-2">
-              <Button onClick={handleGenerate} disabled={loading || !input.trim()}>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                Describe your project idea:
+              </label>
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="e.g., Create a modern web application with user authentication and dashboard..."
+                className="w-full min-h-[120px] p-4 border rounded-lg resize-y font-mono text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button 
+                onClick={handleGenerate} 
+                disabled={loading || !input.trim()}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium px-6 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                size="lg"
+              >
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Generating...
                   </>
                 ) : (
-                  'Generate'
+                  <>
+                    Generate Project
+                  </>
                 )}
               </Button>
             </div>
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-md text-red-800">
-                {error}
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">Error:</span>
+                  <span>{error}</span>
+                </div>
               </div>
             )}
           </CardContent>
@@ -79,44 +108,83 @@ export default function Home() {
 
         {/* Results Tabs */}
         {result && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Results</CardTitle>
+          <Card className="shadow-lg">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+              <CardTitle className="text-slate-800 dark:text-slate-100">
+                Your Generated Project
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="output" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="output">Output</TabsTrigger>
-                  <TabsTrigger value="ir">IR</TabsTrigger>
-                  <TabsTrigger value="report">Validation Report</TabsTrigger>
-                  <TabsTrigger value="metrics">Metrics</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-4 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+                  <TabsTrigger value="output" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 data-[state=active]:text-white text-slate-700 dark:text-slate-300 rounded-md transition-all duration-200">
+                    Output
+                  </TabsTrigger>
+                  <TabsTrigger value="ir" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 data-[state=active]:text-white text-slate-700 dark:text-slate-300 rounded-md transition-all duration-200">
+                    IR
+                  </TabsTrigger>
+                  <TabsTrigger value="report" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 data-[state=active]:text-white text-slate-700 dark:text-slate-300 rounded-md transition-all duration-200">
+                    Report
+                  </TabsTrigger>
+                  <TabsTrigger value="metrics" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 data-[state=active]:text-white text-slate-700 dark:text-slate-300 rounded-md transition-all duration-200">
+                    Metrics
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="output" className="mt-4">
-                  <div className="p-4 bg-slate-50 rounded-md border">
-                    <pre className="whitespace-pre-wrap text-sm font-mono">{result.output}</pre>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">
+                      <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                        Generated Project Code
+                      </h3>
+                      <CopyButton text={result.output} />
+                    </div>
+                    <div className="p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                      <pre className="whitespace-pre-wrap text-sm font-mono text-slate-900 dark:text-slate-100 leading-relaxed">{result.output}</pre>
+                    </div>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="ir" className="mt-4">
                   <div className="space-y-4">
-                    <div>
-                      <h3 className="font-semibold mb-2">Original IR</h3>
-                      <pre className="p-4 bg-slate-50 rounded-md border text-xs font-mono overflow-auto max-h-96">
-                        {JSON.stringify(result.ir_json, null, 2)}
-                      </pre>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                          Original IR
+                        </h3>
+                        <CopyButton text={JSON.stringify(result.ir_json, null, 2)} />
+                      </div>
+                      <div className="p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <pre className="text-xs font-mono overflow-auto max-h-96 text-slate-900 dark:text-slate-100 leading-relaxed">
+                          {JSON.stringify(result.ir_json, null, 2)}
+                        </pre>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">Optimized IR</h3>
-                      <pre className="p-4 bg-slate-50 rounded-md border text-xs font-mono overflow-auto max-h-96">
-                        {JSON.stringify(result.optimized_ir, null, 2)}
-                      </pre>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                          Optimized IR
+                        </h3>
+                        <CopyButton text={JSON.stringify(result.optimized_ir, null, 2)} />
+                      </div>
+                      <div className="p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <pre className="text-xs font-mono overflow-auto max-h-96 text-slate-900 dark:text-slate-100 leading-relaxed">
+                          {JSON.stringify(result.optimized_ir, null, 2)}
+                        </pre>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">Compiled Prompt</h3>
-                      <pre className="p-4 bg-slate-50 rounded-md border text-xs font-mono overflow-auto max-h-96 whitespace-pre-wrap">
-                        {result.compiled_prompt}
-                      </pre>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                          Compiled Prompt
+                        </h3>
+                        <CopyButton text={result.compiled_prompt} />
+                      </div>
+                      <div className="p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <pre className="text-xs font-mono overflow-auto max-h-96 whitespace-pre-wrap text-slate-900 dark:text-slate-100 leading-relaxed">
+                          {result.compiled_prompt}
+                        </pre>
+                      </div>
                     </div>
                   </div>
                 </TabsContent>

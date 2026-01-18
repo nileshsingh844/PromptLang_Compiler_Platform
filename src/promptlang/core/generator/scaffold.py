@@ -148,6 +148,7 @@ INSTRUCTIONS:
 4. Include realistic file contents with proper syntax
 5. Add setup instructions specific to the chosen stack
 6. Justify technology choices in the analysis section
+7. Include comprehensive technology alternatives section at the end
 
 TECHNOLOGY GUIDELINES:
 - JavaScript/TypeScript: Use modern ES6+, npm/yarn, proper package.json
@@ -168,6 +169,22 @@ FRAMEWORK-SPECIFIC:
 - Django: Use class-based views, modern Django patterns
 - Spring Boot: Use annotations, dependency injection, modern Spring
 
+TECHNOLOGY ANALYSIS REQUIREMENTS:
+- Start with a clear "## Technology Analysis" section
+- Explain why the chosen stack is optimal for this specific project
+- Include performance, scalability, and ecosystem considerations
+- Mention team expertise and learning curve factors
+- Discuss maintenance and long-term viability
+
+TECHNOLOGY ALTERNATIVES SECTION:
+- Create a "## Technology Alternatives" section at the end
+- List 3-4 viable alternative stacks with pros/cons for each
+- For each alternative, explain when it would be a better choice
+- Include specific scenarios where each alternative shines
+- Format as bullet points with clear pros/cons separation
+
+CRITICAL: The Technology Alternatives section MUST be included at the end of your response.
+
 Generate comprehensive, production-ready scaffold output."""
             
             # Use the Groq provider's client to generate scaffold
@@ -178,7 +195,7 @@ Generate comprehensive, production-ready scaffold output."""
                     {"role": "user", "content": compiled_prompt}
                 ],
                 temperature=0.3,
-                max_tokens=4000,
+                max_tokens=6000,
             )
             
             generated_content = response.choices[0].message.content
