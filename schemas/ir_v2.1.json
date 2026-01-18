@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://promptlang.io/schemas/ir_v2.1.json",
+  "title": "PromptLang Intermediate Representation v2.1",
+  "description": "IR schema for compiler pipeline stages 0-8",
+  "type": "object",
+  "required": ["meta", "task", "context", "constraints", "output_contract", "quality_checks"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["intent", "schema_version", "compiler_version"],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["scaffold", "debug", "refactor", "explain", "devops"]
+        },
+        "name": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "schema_version": {
+          "type": "string",
+          "pattern": "^2\\.1\\.0$"
+        },
+        "compiler_version": {
+          "type": "string"
+        },
+        "build_hash": {
+          "type": "string"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "required": ["description"],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "success_criteria": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "stack": {
+          "type": "object",
+          "properties": {
+            "language": {"type": "string"},
+            "framework": {"type": "string"},
+            "database": {"type": "string"},
+            "deployment": {"type": "string"}
+          }
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "source_code": {"type": "string"},
+            "error_log": {"type": "string"},
+            "requirements": {"type": "string"}
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["must_avoid"],
+      "properties": {
+        "must_have": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "must_avoid": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "token_budget": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 100000
+        },
+        "security_preserve": {
+          "type": "boolean"
+        }
+      }
+    },
+    "output_contract": {
+      "type": "object",
+      "required": ["required_sections", "file_block_format"],
+      "properties": {
+        "required_sections": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "required_files": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "file_block_format": {
+          "type": "string",
+          "enum": ["strict", "flexible"]
+        },
+        "scaffold_mode": {
+          "type": "string",
+          "enum": ["quick", "full"]
+        }
+      }
+    },
+    "quality_checks": {
+      "type": "object",
+      "properties": {
+        "syntax": {"type": "boolean"},
+        "security": {"type": "boolean"},
+        "quality": {"type": "boolean"},
+        "validation_level": {
+          "type": "string",
+          "enum": ["strict", "progressive"]
+        },
+        "security_level": {
+          "type": "string",
+          "enum": ["low", "high"]
+        }
+      }
+    },
+    "optimization": {
+      "type": "object",
+      "properties": {
+        "priority_weights": {
+          "type": "object"
+        },
+        "semantic_fingerprint": {
+          "type": "string"
+        }
+      }
+    },
+    "target_config": {
+      "type": "object",
+      "properties": {
+        "model": {"type": "string"},
+        "temperature": {"type": "number", "minimum": 0, "maximum": 2},
+        "max_tokens": {"type": "integer"},
+        "fallback_chain": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "stage_timings_ms": {
+          "type": "object"
+        },
+        "token_usage": {
+          "type": "object"
+        },
+        "cost_metadata": {
+          "type": "object"
+        },
+        "transformation_chain": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

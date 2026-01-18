@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "intent": "refactor",
+    "name": "react_refactor",
+    "tags": ["javascript", "react", "frontend"],
+    "schema_version": "2.1.0",
+    "compiler_version": "0.1.0"
+  },
+  "task": {
+    "description": "Refactor React components to use hooks and improve code organization",
+    "scope": "code_refactoring",
+    "success_criteria": [
+      "Components converted to functional components with hooks",
+      "Code organization improved",
+      "No breaking changes"
+    ]
+  },
+  "context": {
+    "stack": {
+      "language": "javascript",
+      "framework": "react"
+    }
+  },
+  "constraints": {
+    "must_have": ["eslint_config", "component_tests"],
+    "must_avoid": ["breaking_changes", "performance_regressions"],
+    "token_budget": 3000,
+    "security_preserve": true
+  },
+  "output_contract": {
+    "required_sections": [
+      "Refactoring Plan",
+      "Code Changes",
+      "Testing Strategy"
+    ],
+    "file_block_format": "flexible"
+  },
+  "quality_checks": {
+    "syntax": true,
+    "quality": true,
+    "validation_level": "progressive",
+    "security_level": "low"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "intent": "scaffold",
+    "name": "fastapi_project",
+    "tags": ["python", "api", "web"],
+    "schema_version": "2.1.0",
+    "compiler_version": "0.1.0"
+  },
+  "task": {
+    "description": "Create a FastAPI REST API with user authentication and CRUD operations",
+    "scope": "full_project",
+    "success_criteria": [
+      "FastAPI application with proper structure",
+      "User authentication endpoints",
+      "CRUD operations for resources"
+    ]
+  },
+  "context": {
+    "stack": {
+      "language": "python",
+      "framework": "fastapi",
+      "database": "sqlite",
+      "deployment": "docker"
+    }
+  },
+  "constraints": {
+    "must_have": ["requirements.txt", "Dockerfile", "README.md"],
+    "must_avoid": ["hardcoded_secrets", "insecure_authentication"],
+    "token_budget": 5000,
+    "security_preserve": true
+  },
+  "output_contract": {
+    "required_sections": [
+      "Project Blueprint",
+      "Directory Structure",
+      "File Contents",
+      "Verification Steps"
+    ],
+    "required_files": ["main.py", "requirements.txt", "Dockerfile"],
+    "file_block_format": "strict",
+    "scaffold_mode": "full"
+  },
+  "quality_checks": {
+    "syntax": true,
+    "security": true,
+    "quality": true,
+    "validation_level": "strict",
+    "security_level": "high"
+  }
+}

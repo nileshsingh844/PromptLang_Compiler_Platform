@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "intent": "debug",
+    "name": "debug_session",
+    "tags": ["debug", "python", "error"],
+    "schema_version": "2.1.0",
+    "compiler_version": "0.1.0"
+  },
+  "task": {
+    "description": "Fix AttributeError: 'NoneType' object has no attribute 'get' in my Flask app",
+    "scope": "error_resolution",
+    "success_criteria": [
+      "Error identified",
+      "Root cause explained",
+      "Solution provided"
+    ]
+  },
+  "context": {
+    "stack": {
+      "language": "python"
+    },
+    "inputs": {
+      "error_log": "AttributeError: 'NoneType' object has no attribute 'get' at line 42 in app.py"
+    }
+  },
+  "constraints": {
+    "must_avoid": ["breaking_changes"],
+    "token_budget": 2000,
+    "security_preserve": true
+  },
+  "output_contract": {
+    "required_sections": [
+      "Error Analysis",
+      "Root Cause",
+      "Solution"
+    ],
+    "file_block_format": "flexible"
+  },
+  "quality_checks": {
+    "syntax": true,
+    "validation_level": "progressive",
+    "security_level": "low"
+  }
+}
