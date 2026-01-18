@@ -42,7 +42,7 @@ class ScaffoldGenerator:
         file_block_format = output_contract.get("file_block_format", "strict")
 
         # Check provider type - use mock generation for mock and ollama (zero-budget)
-        from promptlang.core.translator.llm_provider import MockLLMProvider, OllamaProvider
+        from promptlang.core.translator.llm_provider import MockLLMProvider, OllamaProvider, GroqProvider
 
         if isinstance(self.llm_provider, MockLLMProvider):
             # Mock provider - generate deterministic output
@@ -51,6 +51,10 @@ class ScaffoldGenerator:
             # For Ollama, use mock generation (could be enhanced to use Ollama API)
             logger.debug("Using mock scaffold generation for Ollama provider")
             return self._generate_mock_scaffold(ir, required_sections, required_files, file_block_format)
+        elif isinstance(self.llm_provider, GroqProvider):
+            # For Groq, use real API generation
+            logger.debug("Using Groq API for scaffold generation")
+            return await self._generate_groq_scaffold(compiled_prompt, ir, required_sections, required_files, file_block_format)
         else:
             # For other providers (OpenAI/Anthropic) - not implemented in MVP
             logger.warning("Paid LLM provider not implemented for scaffold generation, using mock")
@@ -112,3 +116,35 @@ class ScaffoldGenerator:
                 parts.append("")
 
         return "\n".join(parts)
+
+    async def _generate_groq_scaffold(
+        self,
+        compiled_prompt: str,
+        ir: Dict[str, Any],
+        required_sections: list,
+        required_files: list,
+        file_block_format: str,
+    ) -> str:
+        """Generate scaffold using Groq API."""
+        try:
+            # Use the Groq provider's client to generate scaffold
+            response = await self.llm_provider.client.chat.completions.create(
+                model="llama-3.1-8b-instant",
+                messages=[
+                    {
+                        "role": "system", 
+                        "content": "You are a expert software architect. Generate detailed, practical scaffold output following the exact contract requirements."
+                    },
+                    {"role": "user", "content": compiled_prompt}
+                ],
+                temperature=0.3,
+                max_tokens=4000,
+            )
+            
+            generated_content = response.choices[0].message.content
+            logger.info("Groq scaffold generation successful")
+            return generated_content
+            
+        except Exception as e:
+            logger.error(f"Groq scaffold generation failed: {e}, falling back to mock")
+            return self._generate_mock_scaffold(ir, required_sections, required_files, file_block_format)

@@ -1,8 +1,32 @@
 #!/bin/bash
 
 # Start script for PromptLang Platform (Backend + Frontend)
+# Supports multiple LLM providers: mock, groq, ollama
 
 echo "🚀 Starting PromptLang Compiler Platform..."
+
+# Check for provider argument
+PROVIDER=${1:-mock}
+echo "🤖 Using LLM Provider: $PROVIDER"
+
+# Set provider-specific environment variables
+if [ "$PROVIDER" = "groq" ]; then
+    if [ -z "$GROQ_API_KEY" ]; then
+        echo "❌ GROQ_API_KEY required for Groq provider!"
+        echo "Get your free API key at: https://console.groq.com"
+        echo "Usage: ./start.sh groq"
+        exit 1
+    fi
+    export LLM_PROVIDER=groq
+    export PROMPTLANG_PRIMARY_PROVIDER=groq
+    echo "✅ Groq provider configured"
+elif [ "$PROVIDER" = "ollama" ]; then
+    export LLM_PROVIDER=ollama
+    echo "✅ Ollama provider configured"
+else
+    export LLM_PROVIDER=mock
+    echo "✅ Mock provider (offline mode) configured"
+fi
 
 # Check if virtual environment exists
 if [ ! -d "venv" ]; then
@@ -22,6 +46,7 @@ fi
 
 # Start FastAPI backend in background
 echo "🔧 Starting FastAPI backend on port 8000..."
+export PYTHONPATH="./src"
 uvicorn promptlang.api.main:app --host 0.0.0.0 --port 8000 --reload > /tmp/promptlang-backend.log 2>&1 &
 BACKEND_PID=$!
 echo "Backend PID: $BACKEND_PID"

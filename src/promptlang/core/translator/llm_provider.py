@@ -179,6 +179,129 @@ class AnthropicProvider(LLMProvider):
         raise NotImplementedError("Anthropic provider not implemented in MVP - use 'mock' or 'ollama' for zero-budget mode")
 
 
+class GroqProvider(LLMProvider):
+    """Groq provider for ultra-fast inference (free tier available)."""
+
+    def __init__(self, api_key: Optional[str] = None):
+        """Initialize Groq provider."""
+        self.api_key = api_key or os.getenv("GROQ_API_KEY")
+        if not self.api_key:
+            raise ValueError("Groq API key required. Set GROQ_API_KEY environment variable.")
+        
+        # Import here to avoid dependency issues if not using Groq
+        try:
+            from openai import AsyncOpenAI
+            self.client = AsyncOpenAI(
+                api_key=self.api_key,
+                base_url="https://api.groq.com/openai/v1"
+            )
+        except ImportError:
+            raise ImportError("openai package required for Groq provider. Install with: pip install openai")
+
+    async def translate_to_ir(
+        self, input_text: str, intent: str, context: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """Translate using Groq's fast inference."""
+        # Build prompt for IR generation
+        prompt = self._build_ir_prompt(input_text, intent, context)
+
+        try:
+            response = await self.client.chat.completions.create(
+                model="llama-3.1-8b-instant",  # Fast model
+                messages=[
+                    {"role": "system", "content": "You are a PromptLang IR generator. Always respond with valid JSON only."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.2,
+                max_tokens=2000,
+            )
+
+            generated_text = response.choices[0].message.content
+            
+            # Clean up JSON if wrapped in markdown code blocks
+            if "```json" in generated_text:
+                start = generated_text.find("```json") + 7
+                end = generated_text.find("```", start)
+                generated_text = generated_text[start:end].strip()
+            elif "```" in generated_text:
+                start = generated_text.find("```") + 3
+                end = generated_text.find("```", start)
+                generated_text = generated_text[start:end].strip()
+
+            ir = json.loads(generated_text)
+            logger.info(f"GroqProvider generated IR for intent: {intent}")
+            return ir
+
+        except Exception as e:
+            logger.error(f"Groq provider error: {e}")
+            # Fall back to mock on error
+            mock_provider = MockLLMProvider()
+            return await mock_provider.translate_to_ir(input_text, intent, context)
+
+    def _build_ir_prompt(self, input_text: str, intent: str, context: Optional[Dict[str, Any]] = None) -> str:
+        """Build prompt for IR generation."""
+        prompt_parts = [
+            "You are a PromptLang IR generator. Convert the following request into a valid PromptLang IR JSON structure.",
+            "",
+            f"Intent: {intent}",
+            f"Input: {input_text}",
+            "",
+            "Generate a JSON object with the following EXACT structure and constraints:",
+            "",
+            "```json",
+            "{",
+            '  "meta": {',
+            '    "intent": "' + intent + '",',
+            '    "name": "project_scaffold",',
+            '    "tags": ["project", "structure"],',
+            '    "schema_version": "2.1.0",',
+            '    "compiler_version": "0.1.0"',
+            "  },",
+            '  "task": {',
+            '    "description": "' + input_text + '",',
+            '    "scope": "full_project",',
+            '    "success_criteria": ["All required files generated", "Structure matches specifications"]',
+            "  },",
+            '  "context": {',
+            '    "stack": {"language": "python", "framework": "fastapi"}',
+            "  },",
+            '  "constraints": {',
+            '    "must_have": ["README.md", "requirements.txt"],',
+            '    "must_avoid": ["hardcoded_secrets", "insecure_patterns"],',
+            '    "token_budget": 4000,',
+            '    "security_preserve": true',
+            "  },",
+            '  "output_contract": {',
+            '    "required_sections": ["Project Blueprint", "Directory Structure", "File Contents", "Verification Steps"],',
+            '    "required_files": [],',
+            '    "file_block_format": "strict",',
+            '    "scaffold_mode": "full"',
+            "  },",
+            '  "quality_checks": {',
+            '    "syntax": true,',
+            '    "security": true,',
+            '    "quality": true,',
+            '    "validation_level": "strict",',
+            '    "security_level": "high"',
+            "  }",
+            "}",
+            "```",
+            "",
+            "CRITICAL REQUIREMENTS:",
+            "- success_criteria MUST be an array of strings",
+            "- file_block_format MUST be either 'strict' or 'flexible'",
+            "- validation_level MUST be either 'strict' or 'progressive'", 
+            "- security_level MUST be either 'low' or 'high'",
+            "- Respond ONLY with the JSON object, no additional text or markdown formatting",
+        ]
+
+        if context:
+            context_str = json.dumps(context)
+            prompt_parts.append(f"Additional context: {context_str}")
+
+        return "\n".join(prompt_parts)
+
+
 class OllamaProvider(LLMProvider):
     """Ollama provider for local LLM inference (zero-budget, optional)."""
 
@@ -283,6 +406,9 @@ def get_llm_provider(provider_name: Optional[str] = None) -> LLMProvider:
     - 'mock': Deterministic mock provider (default, no API keys needed)
     - 'ollama': Local Ollama instance (optional, requires local Ollama server)
 
+    Free tier providers:
+    - 'groq': Groq API (free tier available, ultra-fast inference)
+
     Paid providers (not recommended for MVP):
     - 'openai': Requires API key (raises NotImplementedError)
     - 'anthropic': Requires API key (raises NotImplementedError)
@@ -291,6 +417,12 @@ def get_llm_provider(provider_name: Optional[str] = None) -> LLMProvider:
 
     if provider_name == "mock":
         return MockLLMProvider()
+    elif provider_name == "groq":
+        try:
+            return GroqProvider()
+        except (ValueError, ImportError) as e:
+            logger.warning(f"Groq provider initialization failed: {e}, falling back to mock")
+            return MockLLMProvider()
     elif provider_name == "ollama":
         try:
             return OllamaProvider()
