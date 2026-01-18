@@ -125,16 +125,56 @@ class ScaffoldGenerator:
         required_files: list,
         file_block_format: str,
     ) -> str:
-        """Generate scaffold using Groq API."""
+        """Generate intelligent scaffold using Groq API with multi-language support."""
         try:
+            # Extract the determined technology stack from IR
+            stack = ir.get("context", {}).get("stack", {})
+            language = stack.get("language", "determine")
+            framework = stack.get("framework", "determine")
+            architecture = stack.get("architecture", "determine")
+            
+            # Build intelligent system prompt
+            system_prompt = f"""You are an expert software architect and polyglot developer. Generate detailed, practical scaffold output following the exact contract requirements.
+
+TECHNOLOGY CONTEXT:
+- Language: {language}
+- Framework: {framework} 
+- Architecture: {architecture}
+
+INSTRUCTIONS:
+1. Generate AUTHENTIC code for the determined technology stack
+2. Do NOT default to Python unless explicitly specified
+3. Use modern best practices and patterns for the chosen technology
+4. Include realistic file contents with proper syntax
+5. Add setup instructions specific to the chosen stack
+6. Justify technology choices in the analysis section
+
+TECHNOLOGY GUIDELINES:
+- JavaScript/TypeScript: Use modern ES6+, npm/yarn, proper package.json
+- Python: Use pip, requirements.txt, modern Python patterns
+- Go: Use go.mod, proper module structure, idiomatic Go
+- Rust: Use Cargo.toml, safe Rust patterns, proper error handling
+- Java: Use Maven/Gradle, modern Java features, proper package structure
+- C#: Use .NET CLI, modern C# features, proper project structure
+- PHP: Use Composer, modern PHP practices, proper autoloading
+- Ruby: Use Bundler, modern Ruby patterns, proper gem management
+
+FRAMEWORK-SPECIFIC:
+- React: Use functional components, hooks, modern patterns
+- Vue: Use Composition API, modern Vue 3 patterns
+- Angular: Use standalone components, modern Angular patterns
+- Express: Use middleware, async/await, proper error handling
+- FastAPI: Use dependency injection, Pydantic models, async endpoints
+- Django: Use class-based views, modern Django patterns
+- Spring Boot: Use annotations, dependency injection, modern Spring
+
+Generate comprehensive, production-ready scaffold output."""
+            
             # Use the Groq provider's client to generate scaffold
             response = await self.llm_provider.client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 messages=[
-                    {
-                        "role": "system", 
-                        "content": "You are a expert software architect. Generate detailed, practical scaffold output following the exact contract requirements."
-                    },
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": compiled_prompt}
                 ],
                 temperature=0.3,
@@ -142,7 +182,7 @@ class ScaffoldGenerator:
             )
             
             generated_content = response.choices[0].message.content
-            logger.info("Groq scaffold generation successful")
+            logger.info(f"Groq scaffold generation successful for {language}/{framework}")
             return generated_content
             
         except Exception as e:
