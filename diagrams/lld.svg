@@ -1,0 +1,27 @@
+graph TB
+    subgraph "Controllers"
+        USER_CTRL[UserController]
+        AUTH_CTRL[AuthController]
+    end
+    
+    subgraph "Services"
+        USER_SVC[UserService]
+        AUTH_SVC[AuthService]
+    end
+    
+    subgraph "Repositories"
+        USER_REPO[UserRepository]
+        AUTH_REPO[AuthRepository]
+    end
+    
+    subgraph "Models"
+        USER_MODEL[UserModel]
+        AUTH_MODEL[AuthModel]
+    end
+    
+    USER_CTRL --> USER_SVC
+    AUTH_CTRL --> AUTH_SVC
+    USER_SVC --> USER_REPO
+    AUTH_SVC --> AUTH_REPO
+    USER_REPO --> USER_MODEL
+    AUTH_REPO --> AUTH_MODEL

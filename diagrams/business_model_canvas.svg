@@ -1,0 +1,54 @@
+graph TB
+    subgraph "Key Partners"
+        P1[Partner 1]
+        P2[Partner 2]
+    end
+    
+    subgraph "Key Activities"
+        A1[Activity 1]
+        A2[Activity 2]
+    end
+    
+    subgraph "Key Resources"
+        R1[Resource 1]
+        R2[Resource 2]
+    end
+    
+    subgraph "Value Propositions"
+        V1[Value 1]
+        V2[Value 2]
+    end
+    
+    subgraph "Customer Relationships"
+        C1[Support]
+        C2[Community]
+    end
+    
+    subgraph "Channels"
+        CH1[Channel 1]
+        CH2[Channel 2]
+    end
+    
+    subgraph "Customer Segments"
+        S1[Segment 1]
+        S2[Segment 2]
+    end
+    
+    subgraph "Cost Structure"
+        CS1[Cost 1]
+        CS2[Cost 2]
+    end
+    
+    subgraph "Revenue Streams"
+        RS1[Revenue 1]
+        RS2[Revenue 2]
+    end
+    
+    P1 --> A1
+    A1 --> R1
+    R1 --> V1
+    V1 --> C1
+    C1 --> CH1
+    CH1 --> S1
+    S1 --> RS1
+    RS1 --> CS1

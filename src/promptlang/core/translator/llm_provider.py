@@ -436,24 +436,17 @@ def get_llm_provider(provider_name: Optional[str] = None) -> LLMProvider:
     Zero-budget providers (default):
     - 'mock': Deterministic mock provider (default, no API keys needed)
     - 'ollama': Local Ollama instance (optional, requires local Ollama server)
-
-    Free tier providers:
-    - 'groq': Groq API (free tier available, ultra-fast inference)
+    - 'groq': Groq LPU-powered inference (free tier, requires API key)
 
     Paid providers (not recommended for MVP):
     - 'openai': Requires API key (raises NotImplementedError)
     - 'anthropic': Requires API key (raises NotImplementedError)
     """
-    provider_name = provider_name or os.getenv("LLM_PROVIDER", "mock")
+    provider_name = provider_name or os.getenv("LLM_PROVIDER", "groq")  # Default to groq
+    logger.info(f"Initializing LLM provider: {provider_name}")
 
     if provider_name == "mock":
         return MockLLMProvider()
-    elif provider_name == "groq":
-        try:
-            return GroqProvider()
-        except (ValueError, ImportError) as e:
-            logger.warning(f"Groq provider initialization failed: {e}, falling back to mock")
-            return MockLLMProvider()
     elif provider_name == "ollama":
         try:
             return OllamaProvider()
@@ -462,6 +455,15 @@ def get_llm_provider(provider_name: Optional[str] = None) -> LLMProvider:
             return MockLLMProvider()
         except Exception as e:
             logger.warning(f"Ollama provider initialization failed: {e}, falling back to mock")
+            return MockLLMProvider()
+    elif provider_name == "groq":
+        try:
+            return GroqProvider({})
+        except ImportError:
+            logger.warning("Groq provider not available, falling back to mock provider")
+            return MockLLMProvider()
+        except Exception as e:
+            logger.warning(f"Groq provider initialization failed: {e}, falling back to mock")
             return MockLLMProvider()
     elif provider_name == "openai":
         logger.warning("OpenAI provider requires paid API key - not recommended for zero-budget mode")

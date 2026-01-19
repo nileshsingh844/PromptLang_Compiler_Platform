@@ -1,0 +1,32 @@
+graph TB
+    subgraph "External Systems"
+        ES1[External System 1]
+        ES2[External System 2]
+    end
+    
+    subgraph "Security Layer"
+        SL[Security Gateway]
+        FW[Firewall]
+    end
+    
+    subgraph "Application Layer"
+        APP1[Application 1]
+        APP2[Application 2]
+        APP3[Application 3]
+    end
+    
+    subgraph "Data Layer"
+        DB1[(Database 1)]
+        DB2[(Database 2)]
+        CACHE[(Cache)]
+    end
+    
+    ES1 --> SL
+    ES2 --> SL
+    SL --> FW
+    FW --> APP1
+    FW --> APP2
+    FW --> APP3
+    APP1 --> DB1
+    APP2 --> DB2
+    APP3 --> CACHE

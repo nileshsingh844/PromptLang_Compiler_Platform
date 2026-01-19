@@ -1,0 +1,22 @@
+graph TB
+    subgraph "Web Browser"
+        UI[Web UI]
+    end
+    
+    subgraph "Application Container"
+        API[API Gateway]
+        APP1[Service 1]
+        APP2[Service 2]
+    end
+    
+    subgraph "Database Container"
+        DB1[(Primary DB)]
+        DB2[(Cache)]
+    end
+    
+    UI --> API
+    API --> APP1
+    API --> APP2
+    APP1 --> DB1
+    APP2 --> DB2
+    APP2 --> DB1

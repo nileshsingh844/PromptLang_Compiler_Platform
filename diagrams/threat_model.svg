@@ -1,0 +1,34 @@
+graph TD
+    subgraph "Threat Sources"
+        TS1[External Attacker]
+        TS2[Insider Threat]
+        TS3[Malicious Code]
+    end
+    
+    subgraph "Attack Vectors"
+        AV1[Network Attack]
+        AV2[Social Engineering]
+        AV3[Physical Access]
+    end
+    
+    subgraph "Vulnerabilities"
+        VUL1[Software Bug]
+        VUL2[Weak Password]
+        VUL3[Misconfiguration]
+    end
+    
+    subgraph "Controls"
+        CTRL1[Firewall]
+        CTRL2[Encryption]
+        CTRL3[Access Control]
+    end
+    
+    TS1 --> AV1
+    TS2 --> AV2
+    TS3 --> AV3
+    AV1 --> VUL1
+    AV2 --> VUL2
+    AV3 --> VUL3
+    VUL1 --> CTRL1
+    VUL2 --> CTRL2
+    VUL3 --> CTRL3

@@ -1,0 +1,25 @@
+graph TB
+    subgraph "Presentation Layer"
+        UI[User Interface]
+        API_GW[API Gateway]
+    end
+    
+    subgraph "Business Logic Layer"
+        AUTH[Authentication Service]
+        BUSINESS[Business Service]
+        WORKFLOW[Workflow Engine]
+    end
+    
+    subgraph "Data Layer"
+        DB[(Database)]
+        CACHE[(Cache)]
+        QUEUE[Message Queue]
+    end
+    
+    UI --> API_GW
+    API_GW --> AUTH
+    API_GW --> BUSINESS
+    AUTH --> DB
+    BUSINESS --> DB
+    BUSINESS --> CACHE
+    WORKFLOW --> QUEUE

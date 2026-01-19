@@ -1,0 +1,13 @@
+graph TB
+    subgraph "FastAPI REST API with User Authentication System"
+        A[Core Application]
+        B[Database]
+        C[API Gateway]
+    end
+    
+    U[User] --> C
+    C --> A
+    A --> B
+    
+    style U fill:#f9f,stroke:#333,stroke-width:2px
+    style A fill:#bbf,stroke:#333,stroke-width:2px

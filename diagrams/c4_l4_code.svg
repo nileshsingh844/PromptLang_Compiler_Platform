@@ -1,0 +1,23 @@
+graph LR
+    subgraph "Frontend Code"
+        TS[TypeScript]
+        JSX[React JSX]
+        CSS[CSS Styles]
+    end
+    
+    subgraph "Backend Code"
+        PY[Python]
+        SQL[SQL Queries]
+        CONFIG[Config Files]
+    end
+    
+    subgraph "Infrastructure"
+        DOCKER[Dockerfile]
+        K8S[Kubernetes YAML]
+    end
+    
+    TS --> JSX
+    JSX --> CSS
+    PY --> SQL
+    PY --> CONFIG
+    DOCKER --> K8S

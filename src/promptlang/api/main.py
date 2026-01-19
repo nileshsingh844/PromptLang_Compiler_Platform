@@ -7,7 +7,7 @@ import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from promptlang.api.routes import generate_router, validate_router, optimize_router
+from promptlang.api.routes import generate_router, validate_router, optimize_router, diagrams_router
 from promptlang.api.routes.generate import init_orchestrator
 from promptlang.core.cache.manager import CacheManager
 
@@ -40,6 +40,7 @@ app.add_middleware(
 app.include_router(generate_router)
 app.include_router(validate_router)
 app.include_router(optimize_router)
+app.include_router(diagrams_router)
 
 
 @app.on_event("startup")

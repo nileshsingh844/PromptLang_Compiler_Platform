@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User
+    participant UI
+    participant Controller
+    participant Service
+    participant Database
+    
+    User->>UI: Login Request
+    UI->>Controller: Submit Credentials
+    Controller->>Service: Validate User
+    Service->>Database: Query User
+    Database-->>Service: User Data
+    Service-->>Controller: Validation Result
+    Controller-->>UI: Login Response
+    UI-->>User: Show Dashboard

@@ -1,0 +1,23 @@
+graph TB
+    subgraph "WebApp"
+        UI[React Components]
+        Router[Router]
+    end
+    
+    subgraph "API"
+        Controller[Controller]
+        Service[Business Logic]
+        Repository[Data Access]
+    end
+    
+    subgraph "Database"
+        Tables[Tables]
+        Indexes[Indexes]
+    end
+    
+    UI --> Router
+    Router --> Controller
+    Controller --> Service
+    Service --> Repository
+    Repository --> Tables
+    Repository --> Indexes

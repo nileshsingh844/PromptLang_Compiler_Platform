@@ -1,0 +1,17 @@
+graph TB
+    subgraph "FastAPI REST API with User Authentication System"
+        API[API Gateway]
+        APP[Application]
+        DB[(Database)]
+    end
+    
+    User[User] --> API
+    Admin[Admin] --> API
+    External[External System] --> API
+    
+    API --> APP
+    APP --> DB
+    
+    style User fill:#e1f5fe
+    style Admin fill:#f3e5f5
+    style External fill:#fff3e0

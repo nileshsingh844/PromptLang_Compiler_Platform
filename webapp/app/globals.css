@@ -170,6 +170,516 @@
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
   
+  /* Enhanced Mermaid Rendering Fixes */
+
+/* Prevent rendering buffer issues */
+.mermaid-diagram-container {
+  @apply w-full h-full;
+  min-height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fix for Mermaid rendering buffer */
+.mermaid {
+  @apply w-full h-full;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 200px !important;
+  position: relative !important;
+}
+
+/* SVG rendering optimizations */
+.mermaid-diagram-container svg {
+  @apply block mx-auto;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+}
+
+/* Prevent layout shifts during rendering */
+.diagram-wrapper {
+  @apply flex items-center justify-center w-full h-full;
+  min-height: 200px;
+  position: relative;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 8px;
+}
+
+.dark .diagram-wrapper {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+/* Loading state with proper dimensions */
+.diagram-loading {
+  @apply flex items-center justify-center;
+  min-height: 200px;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 8px;
+  border: 2px dashed #e5e7eb;
+}
+
+.dark .diagram-loading {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  border-color: #4b5563;
+}
+
+/* Error state with proper dimensions */
+.diagram-error {
+  @apply flex items-center justify-center;
+  min-height: 200px;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-radius: 8px;
+  border: 2px dashed #fca5a5;
+}
+
+.dark .diagram-error {
+  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+  border-color: #dc2626;
+}
+
+/* Fix for font loading issues */
+@supports (font-display: swap) {
+  .mermaid-diagram-container {
+    font-family: 'system-ui', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/* Prevent content overflow */
+.diagram-content {
+  @apply w-full overflow-hidden;
+  max-height: 400px;
+  position: relative;
+}
+
+/* Ensure proper scaling on all devices */
+@media (max-width: 640px) {
+  .mermaid-diagram-container {
+    font-size: 12px !important;
+  }
+  
+  .mermaid-diagram-container svg {
+    font-size: 12px !important;
+    padding: 8px !important;
+  }
+  
+  .diagram-wrapper {
+    min-height: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mermaid-diagram-container {
+    font-size: 13px !important;
+  }
+  
+  .mermaid-diagram-container svg {
+    font-size: 13px !important;
+    padding: 12px !important;
+  }
+  
+  .diagram-wrapper {
+    min-height: 175px;
+  }
+}
+
+/* Dark mode adjustments for better visibility */
+.dark .mermaid-diagram-container svg {
+  filter: brightness(0.9) contrast(1.1);
+}
+
+/* Print optimizations */
+@media print {
+  .mermaid-diagram-container {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  .mermaid-diagram-container svg {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* Animation for smooth rendering */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.mermaid-diagram-container svg {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Fix for rendering buffer in complex diagrams */
+.mermaid-diagram-container .node,
+.mermaid-diagram-container .edge,
+.mermaid-diagram-container .cluster {
+  transform-origin: center;
+}
+
+/* Ensure proper text rendering */
+.mermaid-diagram-container text {
+  font-family: 'system-ui', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Enhanced Diagram UI/UX Styles */
+
+/* Diagram Card Styles */
+.diagram-card {
+  @apply transition-all duration-300 ease-in-out;
+  min-height: 600px;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+}
+
+.diagram-card:hover {
+  @apply transform scale-105 shadow-2xl;
+}
+
+/* Diagram Container Standardization */
+.diagram-wrapper {
+  @apply flex items-center justify-center w-full h-full;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 8px;
+  position: relative;
+}
+
+.dark .diagram-wrapper {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+/* Mermaid Diagram Container */
+.mermaid-diagram-container {
+  @apply w-full h-full flex items-center justify-center;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mermaid-diagram-container svg {
+  @apply transition-all duration-200 ease-in-out;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .mermaid-diagram-container svg {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading and Error States */
+.diagram-loading {
+  @apply flex items-center justify-center h-96;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 8px;
+  border: 2px dashed #e5e7eb;
+}
+
+.dark .diagram-loading {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  border-color: #4b5563;
+}
+
+.diagram-error {
+  @apply flex items-center justify-center h-96;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-radius: 8px;
+  border: 2px dashed #fca5a5;
+}
+
+.dark .diagram-error {
+  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+  border-color: #dc2626;
+}
+
+/* Responsive Grid Layout */
+.diagram-grid {
+  @apply grid gap-6;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+@media (max-width: 1024px) {
+  .diagram-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .diagram-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .diagram-card {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 480px) {
+  .diagram-card {
+    min-height: 450px;
+  }
+}
+
+/* Card Header Improvements */
+.diagram-header {
+  @apply p-4 border-b border-slate-200 dark:border-slate-700;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.dark .diagram-header {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+/* Badge Styles */
+.diagram-badge {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+  transition: all 0.2s ease;
+}
+
+.diagram-badge:hover {
+  @apply transform scale-105;
+}
+
+.diagram-badge-tool {
+  @apply bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300;
+}
+
+.diagram-badge-format {
+  @apply bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300;
+}
+
+/* Action Buttons */
+.diagram-actions {
+  @apply flex gap-2 p-4;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border-top: 1px solid #e5e7eb;
+}
+
+.dark .diagram-actions {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border-top-color: #4b5563;
+}
+
+.diagram-button {
+  @apply flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+}
+
+.diagram-button:hover {
+  @apply transform scale-105 shadow-md;
+}
+
+.diagram-button-copy:hover {
+  @apply bg-blue-50 border-blue-300 text-blue-700;
+}
+
+.dark .diagram-button-copy:hover {
+  @apply bg-blue-900/30 border-blue-600 text-blue-400;
+}
+
+.diagram-button-download:hover {
+  @apply bg-green-50 border-green-300 text-green-700;
+}
+
+.dark .diagram-button-download:hover {
+  @apply bg-green-900/30 border-green-600 text-green-400;
+}
+
+/* Diagram Display Area */
+.diagram-display {
+  @apply relative bg-slate-50 dark:bg-slate-900;
+  min-height: 384px;
+  max-height: 384px;
+}
+
+.diagram-label {
+  @apply absolute top-3 right-3 z-10 px-2 py-1 bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-300 text-xs rounded-full font-medium shadow-sm;
+  border: 1px solid #dbeafe;
+  backdrop-filter: blur(8px);
+}
+
+.dark .diagram-label {
+  border-color: #1e3a8a;
+}
+
+/* Header Section */
+.diagram-header-section {
+  @apply p-6 rounded-xl border shadow-lg;
+  background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 50%, #ede9fe 100%);
+  border-color: #3b82f6;
+}
+
+.dark .diagram-header-section {
+  background: linear-gradient(135deg, #1e3a8a 0%, #312e81 50%, #581c87 100%);
+  border-color: #60a5fa;
+}
+
+/* Status Indicator */
+.status-indicator {
+  @apply flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium;
+  transition: all 0.3s ease;
+}
+
+.status-indicator.completed {
+  @apply bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-400;
+}
+
+.status-indicator.processing {
+  @apply bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-400;
+}
+
+.status-indicator.error {
+  @apply bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-400;
+}
+
+.status-dot {
+  @apply w-2 h-2 rounded-full;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.status-dot.completed {
+  @apply bg-green-500;
+}
+
+.status-dot.processing {
+  @apply bg-blue-500;
+}
+
+.status-dot.error {
+  @apply bg-red-500;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.diagram-loading-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Accessibility Improvements */
+.diagram-card:focus-within {
+  @apply ring-2 ring-blue-500 ring-offset-2;
+}
+
+.diagram-button:focus-visible {
+  @apply ring-2 ring-blue-500 ring-offset-2;
+}
+
+/* Print Styles */
+@media print {
+  .diagram-card {
+    @apply shadow-none border border-gray-300;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  .diagram-actions {
+    display: none;
+  }
+  
+  .diagram-label {
+    display: none;
+  }
+}
+  .mermaid-diagram-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .mermaid-diagram-container svg {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+
+  /* Responsive diagram containers */
+  @media (max-width: 640px) {
+    .mermaid-diagram-container {
+      font-size: 12px;
+    }
+    
+    .mermaid-diagram-container svg {
+      font-size: 12px !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .mermaid-diagram-container {
+      font-size: 14px;
+    }
+    
+    .mermaid-diagram-container svg {
+      font-size: 14px !important;
+    }
+  }
+
+  /* Ensure diagrams don't overflow on small screens */
+  @media (max-width: 480px) {
+    .mermaid-diagram-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .mermaid-diagram-container svg {
+      min-width: 300px;
+    }
+  }
+
+  /* Dark mode diagram adjustments */
+  .dark .mermaid-diagram-container svg {
+    filter: brightness(0.9) contrast(1.1);
+  }
+
+  /* Diagram card responsive adjustments */
+  @media (max-width: 1024px) {
+    .diagram-card {
+      margin-bottom: 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .diagram-card {
+      margin-bottom: 1.5rem;
+    }
+  }
+  
   /* Custom scrollbar for dark mode */
   .dark ::-webkit-scrollbar {
     width: 8px;
