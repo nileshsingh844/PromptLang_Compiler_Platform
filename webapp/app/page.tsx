@@ -405,11 +405,23 @@ export default function Home() {
                                 {/* Card Content */}
                                 <CardContent className="p-0">
                                   {/* Diagram Display Area */}
-                                  <div className="relative bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+                                  <div className="relative bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 group">
                                     <div className="absolute top-3 right-3 z-10">
                                       <span className="px-2 py-1 bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-300 text-xs rounded-full font-medium shadow-sm border border-blue-200 dark:border-blue-700">
                                         Mermaid Diagram
                                       </span>
+                                    </div>
+                                    
+                                    {/* Click indicator overlay */}
+                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 transition-all duration-200 flex items-center justify-center pointer-events-none z-20">
+                                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 shadow-lg border border-slate-200 dark:border-slate-700">
+                                        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                          </svg>
+                                          Click to open full size
+                                        </div>
+                                      </div>
                                     </div>
                                     
                                     {/* Standardized diagram container */}
@@ -418,6 +430,8 @@ export default function Home() {
                                         content={diagram.content}
                                         className="w-full h-full"
                                         maxHeight={320}
+                                        name={diagram.name}
+                                        clickable={true}
                                       />
                                     </div>
                                   </div>
@@ -452,6 +466,22 @@ export default function Home() {
                                       >
                                         <Download className="w-4 h-4 mr-2" />
                                         Download
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="default"
+                                        onClick={() => {
+                                          // Import the function dynamically to avoid SSR issues
+                                          import('@/lib/mermaid-utils').then(({ openDiagramInNewTab }) => {
+                                            openDiagramInNewTab(diagram.content, diagram.name)
+                                          })
+                                        }}
+                                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                                      >
+                                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                        Full Size
                                       </Button>
                                     </div>
                                   </div>

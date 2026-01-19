@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { openDiagramInNewTab } from '@/lib/mermaid-utils'
 
 // Type declaration for mermaid
 declare global {
@@ -14,19 +15,33 @@ interface MermaidDiagramProps {
   className?: string
   maxHeight?: number
   aspectRatio?: 'auto' | 'square' | 'wide'
+  name?: string
+  clickable?: boolean
 }
 
 export default function MermaidDiagram({ 
   content, 
   className = '', 
   maxHeight = 400,
-  aspectRatio = 'auto'
+  aspectRatio = 'auto',
+  name = 'Diagram',
+  clickable = true
 }: MermaidDiagramProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [renderId, setRenderId] = useState<string>('')
   const [hasRendered, setHasRendered] = useState(false)
+
+  const handleDiagramClick = async () => {
+    if (!clickable || !content || content.trim() === '') return;
+    
+    try {
+      await openDiagramInNewTab(content, name);
+    } catch (error) {
+      console.error('Error opening diagram:', error);
+    }
+  }
 
   useEffect(() => {
     // Only render if we have valid content and container, and haven't rendered yet
@@ -222,5 +237,12 @@ export default function MermaidDiagram({
     )
   }
 
-  return <div ref={containerRef} className={`mermaid-diagram-container ${className}`} />
+  return (
+    <div 
+      ref={containerRef} 
+      className={`mermaid-diagram-container ${className} ${clickable ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}
+      onClick={handleDiagramClick}
+      title={clickable ? "Click to open in full size" : ""}
+    />
+  )
 }

@@ -180,6 +180,21 @@
   overflow: hidden;
 }
 
+/* Make diagrams clickable with proper feedback */
+.mermaid-diagram-container.cursor-pointer {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.mermaid-diagram-container.cursor-pointer:hover {
+  opacity: 0.9;
+}
+
+.mermaid-diagram-container.cursor-pointer:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
 /* Fix for Mermaid rendering buffer */
 .mermaid {
   @apply w-full h-full;
