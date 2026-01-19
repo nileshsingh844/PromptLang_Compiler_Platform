@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CopyButton } from '@/components/ui/copy-button';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { api, GenerateResponse, DiagramRequest, DiagramResponse } from '@/lib/api';
-import { Loader2, Download, Eye, BarChart3, FileText, Network, Code } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, BarChart3, Network, Download, Copy, Image } from 'lucide-react';
 import MermaidDiagram from '@/components/mermaid-diagram';
+import { api, GenerateResponse, DiagramRequest, DiagramResponse } from '@/lib/api';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { CopyButton } from '@/components/ui/copy-button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Home() {
   const [input, setInput] = useState('Create a FastAPI REST API with user authentication');
@@ -18,6 +20,45 @@ export default function Home() {
   const [diagrams, setDiagrams] = useState<DiagramResponse | null>(null);
   const [diagramsLoading, setDiagramsLoading] = useState(false);
   const [diagramsError, setDiagramsError] = useState<string | null>(null);
+  const [copyingImage, setCopyingImage] = useState<string | null>(null);
+  const [copyingAll, setCopyingAll] = useState(false);
+
+  const handleCopyImage = async (diagram: any) => {
+    setCopyingImage(diagram.name);
+    try {
+      // Simple fallback - copy the mermaid code to clipboard
+      await navigator.clipboard.writeText(diagram.content);
+      alert(`${diagram.name} code copied to clipboard!`);
+    } catch (error) {
+      console.error('Error copying diagram:', error);
+      alert('Failed to copy diagram to clipboard.');
+    } finally {
+      setCopyingImage(null);
+    }
+  };
+
+  const handleCopyAllImages = async () => {
+    if (!diagrams?.generated_diagrams || diagrams.generated_diagrams.length === 0) {
+      alert('No diagrams to copy.');
+      return;
+    }
+
+    setCopyingAll(true);
+    try {
+      // Combine all diagram codes
+      const allCodes = diagrams.generated_diagrams.map((diagram: any) => 
+        `=== ${diagram.name} ===\n${diagram.content}\n`
+      ).join('\n');
+      
+      await navigator.clipboard.writeText(allCodes);
+      alert(`${diagrams.generated_diagrams.length} diagram codes copied to clipboard!`);
+    } catch (error) {
+      console.error('Error copying all diagrams:', error);
+      alert('Failed to copy diagrams to clipboard.');
+    } finally {
+      setCopyingAll(false);
+    }
+  };
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -361,12 +402,24 @@ export default function Home() {
                                 {diagrams.generated_diagrams?.length || 0} diagrams created successfully
                               </p>
                             </div>
-                            {diagrams.status === 'completed' && (
-                              <div className="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900 rounded-full">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                <span className="text-sm font-medium text-green-700 dark:text-green-400">Completed</span>
-                              </div>
-                            )}
+                            <div className="flex items-center gap-3">
+                              {diagrams.status === 'completed' && (
+                                <div className="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900 rounded-full">
+                                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                  <span className="text-sm font-medium text-green-700 dark:text-green-400">Completed</span>
+                                </div>
+                              )}
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={handleCopyAllImages}
+                                disabled={copyingAll || !diagrams.generated_diagrams?.length}
+                                className="hover:bg-purple-50 dark:hover:bg-purple-900/20 border-purple-200 dark:border-purple-700"
+                              >
+                                <Image className="w-4 h-4 mr-2" />
+                                {copyingAll ? 'Copying...' : 'Copy All Codes'}
+                              </Button>
+                            </div>
                           </div>
                         </div>
 
@@ -431,7 +484,7 @@ export default function Home() {
                                         className="w-full h-full"
                                         maxHeight={320}
                                         name={diagram.name}
-                                        clickable={true}
+                                        clickable={false}
                                       />
                                     </div>
                                   </div>
@@ -442,13 +495,12 @@ export default function Home() {
                                       <Button
                                         size="sm"
                                         variant="outline"
-                                        onClick={() => {
-                                          navigator.clipboard.writeText(diagram.content)
-                                        }}
-                                        className="flex-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-blue-200 dark:border-blue-700"
+                                        onClick={() => handleCopyImage(diagram)}
+                                        disabled={copyingImage === diagram.name}
+                                        className="flex-1 hover:bg-purple-50 dark:hover:bg-purple-900/20 border-purple-200 dark:border-purple-700"
                                       >
-                                        <Code className="w-4 h-4 mr-2" />
-                                        Copy Code
+                                        <Copy className="w-4 h-4 mr-2" />
+                                        {copyingImage === diagram.name ? 'Copying...' : 'Copy Code'}
                                       </Button>
                                       <Button
                                         size="sm"
@@ -471,10 +523,36 @@ export default function Home() {
                                         size="sm"
                                         variant="default"
                                         onClick={() => {
-                                          // Import the function dynamically to avoid SSR issues
-                                          import('@/lib/mermaid-utils').then(({ openDiagramInNewTab }) => {
-                                            openDiagramInNewTab(diagram.content, diagram.name)
-                                          })
+                                          // Simple fallback - open in new tab with mermaid code
+                                          const newWindow = window.open('', '_blank');
+                                          if (newWindow) {
+                                            newWindow.document.write(`
+                                              <!DOCTYPE html>
+                                              <html>
+                                              <head>
+                                                <title>${diagram.name} - Diagram Code</title>
+                                                <style>
+                                                  body { 
+                                                    font-family: monospace; 
+                                                    padding: 20px; 
+                                                    background: #f5f5f5;
+                                                  }
+                                                  pre { 
+                                                    background: white; 
+                                                    padding: 20px; 
+                                                    border-radius: 8px;
+                                                    overflow-x: auto;
+                                                  }
+                                                </style>
+                                              </head>
+                                              <body>
+                                                <h1>${diagram.name}</h1>
+                                                <pre>${diagram.content}</pre>
+                                              </body>
+                                              </html>
+                                            `);
+                                            newWindow.document.close();
+                                          }
                                         }}
                                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                                       >

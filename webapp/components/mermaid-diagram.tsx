@@ -34,14 +34,9 @@ export default function MermaidDiagram({
   const [hasRendered, setHasRendered] = useState(false)
 
   const handleDiagramClick = async () => {
-    if (!clickable || !content || content.trim() === '') return;
-    
-    try {
-      await openDiagramInNewTab(content, name);
-    } catch (error) {
-      console.error('Error opening diagram:', error);
-    }
-  }
+    // Click functionality disabled for now to prevent errors
+    console.log('Diagram clicked:', name);
+  };
 
   useEffect(() => {
     // Only render if we have valid content and container, and haven't rendered yet
