@@ -69,58 +69,326 @@ cd webapp && npm install && cd ..
 chmod +x start-groq.sh start.sh
 ```
 
-## 🌐 Access Points
+## 🏗️ Project Structure
 
-Once running, access the application at:
+```
+PromptLang_Compiler_Platform/
+├── 📁 src/                          # Backend Python Application
+│   ├── 📁 promptlang/               # Main application package
+│   │   ├── 📁 api/                  # FastAPI REST API
+│   │   │   ├── 📁 models/           # Pydantic request/response models
+│   │   │   │   ├── 📄 requests.py   # API request schemas
+│   │   │   │   └── 📄 responses.py  # API response schemas
+│   │   │   ├── 📁 routes/           # API endpoint handlers
+│   │   │   │   ├── 📄 generate.py   # Main generation endpoint
+│   │   │   │   ├── 📄 diagrams.py    # Diagram generation endpoint
+│   │   │   │   ├── 📄 optimize.py    # IR optimization endpoint
+│   │   │   │   ├── 📄 validate.py    # Validation endpoint
+│   │   │   │   └── 📄 __init__.py
+│   │   │   └── 📄 main.py            # FastAPI application entry point
+│   │   ├── 📁 cli/                   # Command-line interface
+│   │   │   ├── 📄 main.py            # CLI entry point
+│   │   │   └── 📄 __init__.py
+│   │   └── 📁 core/                 # Core processing modules
+│   │       ├── 📁 cache/             # Multi-level caching system
+│   │       │   ├── 📄 l1_cache.py    # In-memory cache
+│   │       │   ├── 📄 l2_cache.py    # Persistent cache
+│   │       │   ├── 📄 manager.py     # Cache orchestration
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 clarification/     # Input clarification engine
+│   │       │   ├── 📄 engine.py      # Clarification logic
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 compiler/          # Dialect compilation
+│   │       │   ├── 📁 dialects/      # Model-specific dialects
+│   │       │   │   ├── 📄 claude.py   # Claude model dialect
+│   │       │   │   ├── 📄 gpt.py      # GPT model dialect
+│   │       │   │   ├── 📄 oss.py      # Open-source model dialect
+│   │       │   │   └── 📄 __init__.py
+│   │       │   ├── 📄 dialect_compiler.py # Dialect compiler
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 diagram/           # Diagram generation system
+│   │       │   ├── 📄 analyzer.py    # Project context analysis
+│   │       │   ├── 📄 catalog.py     # Diagram type catalog
+│   │       │   ├── 📄 generator_simple.py # Simple diagram generator
+│   │       │   ├── 📄 pipeline.py    # Diagram generation pipeline
+│   │       │   ├── 📄 scorer.py      # Diagram relevance scoring
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 generator/         # Code generation
+│   │       │   ├── 📄 scaffold.py    # Project scaffolding
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 intent/            # Intent recognition
+│   │       │   ├── 📄 router.py      # Intent routing logic
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 ir/                # Intermediate Representation
+│   │       │   ├── 📄 schema_loader.py # IR schema loading
+│   │       │   ├── 📄 validator.py   # IR validation
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 linter/            # Code linting and quality
+│   │       │   ├── 📄 rules.py       # Linting rules
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 llm/               # LLM provider abstraction
+│   │       │   ├── 📁 providers/     # LLM provider implementations
+│   │       │   │   ├── 📄 groq_provider.py # Groq API provider
+│   │       │   │   ├── 📄 huggingface_provider.py # HuggingFace provider
+│   │       │   │   ├── 📄 openrouter_provider.py # OpenRouter provider
+│   │       │   │   └── 📄 __init__.py
+│   │       │   ├── 📄 base.py        # Base LLM interface
+│   │       │   ├── 📄 config.py      # LLM configuration
+│   │       │   ├── 📄 manager.py     # LLM provider manager
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 optimizer/         # Token optimization
+│   │       │   ├── 📄 strategies.py   # Optimization strategies
+│   │       │   ├── 📄 token_optimizer.py # Token optimization logic
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 pipeline/          # Processing pipeline
+│   │       │   ├── 📄 orchestrator.py # Pipeline orchestration
+│   │       │   ├── 📄 stages.py      # Pipeline stage definitions
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 translator/        # IR translation
+│   │       │   ├── 📄 ir_builder.py  # IR construction
+│   │       │   ├── 📄 llm_provider.py # LLM-based translation
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 utils/             # Utility functions
+│   │       │   ├── 📄 hashing.py     # Hashing utilities
+│   │       │   ├── 📄 timing.py      # Timing utilities
+│   │       │   └── 📄 __init__.py
+│   │       ├── 📁 validator/         # Output validation
+│   │       │   ├── 📄 contract.py    # Contract validation
+│   │       │   ├── 📄 output_validator.py # Output validation
+│   │       │   ├── 📄 parsers.py     # Validation parsers
+│   │       │   ├── 📄 quality.py     # Quality validation
+│   │       │   ├── 📄 security.py    # Security validation
+│   │       │   ├── 📄 syntax.py      # Syntax validation
+│   │       │   └── 📄 __init__.py
+│   │       └── 📄 __init__.py
+│   └── 📁 schemas/                  # JSON schemas
+│       └── 📄 ir_v2.1.json          # IR schema definition
+├── 📁 webapp/                       # Next.js Frontend Application
+│   ├── 📁 app/                      # Next.js app directory
+│   │   ├── 📁 test-mermaid/         # Mermaid testing page
+│   │   │   └── 📄 page.tsx          # Test page component
+│   │   ├── 📄 globals.css           # Global styles
+│   │   ├── 📄 layout.tsx            # Root layout component
+│   │   └── 📄 page.tsx              # Main page component
+│   ├── 📁 components/               # React components
+│   │   ├── 📁 ui/                   # UI component library
+│   │   │   ├── 📄 badge.tsx         # Badge component
+│   │   │   ├── 📄 button.tsx        # Button component
+│   │   │   ├── 📄 card.tsx          # Card component
+│   │   │   ├── 📄 copy-button.tsx   # Copy button component
+│   │   │   ├── 📄 tabs.tsx          # Tabs component
+│   │   │   ├── 📄 textarea.tsx      # Textarea component
+│   │   │   └── 📄 theme-toggle.tsx  # Theme toggle component
+│   │   ├── 📄 mermaid-diagram.tsx   # Mermaid diagram component
+│   │   └── 📄 theme-provider.tsx   # Theme context provider
+│   ├── 📁 lib/                      # Utility libraries
+│   │   ├── 📄 api.ts                # API client
+│   │   ├── 📄 mermaid-utils.ts      # Mermaid utilities
+│   │   └── 📄 utils.ts              # General utilities
+│   ├── 📄 next.config.js            # Next.js configuration
+│   ├── 📄 next-env.d.ts             # Next.js type definitions
+│   ├── 📄 package.json              # Node.js dependencies
+│   ├── 📄 package-lock.json         # Locked dependencies
+│   ├── 📄 postcss.config.js         # PostCSS configuration
+│   ├── 📄 tailwind.config.js        # Tailwind CSS configuration
+│   └── 📄 tsconfig.json             # TypeScript configuration
+├── 📁 tests/                        # Test suite
+│   ├── 📁 fixtures/                 # Test fixtures
+│   │   ├── 📄 debug_python.json     # Debug test fixture
+│   │   ├── 📄 refactor_react.json   # Refactor test fixture
+│   │   └── 📄 scaffold_fastapi.json # Scaffold test fixture
+│   ├── 📁 integration/              # Integration tests
+│   │   ├── 📄 test_pipeline.py      # Pipeline integration tests
+│   │   └── 📄 __init__.py
+│   ├── 📁 unit/                     # Unit tests
+│   │   ├── 📄 test_intent_router.py # Intent router tests
+│   │   ├── 📄 test_ir_validator.py  # IR validator tests
+│   │   ├── 📄 test_token_optimizer.py # Token optimizer tests
+│   │   └── 📄 __init__.py
+│   └── 📄 __init__.py
+├── 📁 diagrams/                     # Generated diagram assets
+│   ├── 📄 adr.svg                   # Architecture Decision Records
+│   ├── 📄 api_overview.svg          # API overview diagram
+│   ├── 📄 blockchain_architecture.svg # Blockchain architecture
+│   ├── 📄 business_model_canvas.svg # Business model canvas
+│   ├── 📄 c4_l1_context.svg         # C4 Level 1 Context
+│   ├── 📄 c4_l2_container.svg        # C4 Level 2 Container
+│   ├── 📄 c4_l3_component.svg        # C4 Level 3 Component
+│   ├── 📄 c4_l4_code.svg             # C4 Level 4 Code
+│   ├── 📄 ci_pipeline.svg           # CI/CD pipeline
+│   ├── 📄 class_diagram.svg          # UML class diagram
+│   ├── 📄 cloud_architecture.svg     # Cloud architecture
+│   ├── 📄 compliance_matrix.svg      # Compliance matrix
+│   ├── 📄 database_schema.svg        # Database schema
+│   ├── 📄 domain_model.svg           # Domain model
+│   ├── 📄 er_diagram.svg             # Entity-relationship diagram
+│   ├── 📄 gantt_chart.svg            # Gantt chart
+│   ├── 📄 hld.svg                    # High-level design
+│   ├── 📄 iot_architecture.svg       # IoT architecture
+│   ├── 📄 lld.svg                    # Low-level design
+│   ├── 📄 ml_pipeline.svg            # Machine learning pipeline
+│   ├── 📄 monitoring_dashboard.svg    # Monitoring dashboard
+│   ├── 📄 performance_architecture.svg # Performance architecture
+│   ├── 📄 service_dependency_graph.svg # Service dependencies
+│   ├── 📄 swimlane_diagram.svg       # Swimlane diagram
+│   ├── 📄 system_context.svg         # System context
+│   ├── 📄 system_landscape.svg       # System landscape
+│   ├── 📄 test_pyramid.svg           # Testing pyramid
+│   ├── 📄 threat_model.svg           # Threat model
+│   ├── 📄 uml_sequence.svg           # UML sequence diagram
+│   ├── 📄 use_case_diagram.svg       # Use case diagram
+│   └── 📄 user_flow.svg              # User flow diagram
+├── 📁 docker/                       # Docker configuration
+│   ├── 📄 docker-compose.yml        # Docker Compose configuration
+│   └── 📄 Dockerfile                # Docker image definition
+├── 📄 FREE_LLM_SETUP.md             # Free LLM setup guide
+├── 📄 GROQ_SETUP.md                 # Groq API setup guide
+├── 📄 MIGRATION_GUIDE.md            # Migration instructions
+├── 📄 pyproject.toml                # Python project configuration
+├── 📄 README_GROQ.md               # Groq-specific README
+├── 📄 README.md                     # Main project documentation
+├── 📄 requirements.txt              # Python dependencies
+├── 📄 start-groq.sh                 # Groq startup script
+├── 📄 start.sh                     # General startup script
+├── 📄 WEBAPP_SETUP.md              # Webapp setup guide
+└── 📄 ZERO_BUDGET_MODE.md           # Zero-budget mode guide
+```
 
-- **🎨 Frontend**: http://localhost:3000
-- **📊 Backend API**: http://localhost:8000  
-- **📚 API Documentation**: http://localhost:8000/docs
-- **❤️ Health Check**: http://localhost:8000/health
+## 🚀 Architecture Overview
 
-## ⚙️ Configuration
+### Backend Architecture (Python/FastAPI)
+
+The backend follows a modular, microservice-oriented architecture with clear separation of concerns:
+
+#### **Core Processing Pipeline**
+```
+Human Input → Intent Recognition → IR Generation → Optimization → Compilation → Output
+```
+
+#### **Key Components**
+
+1. **API Layer** (`src/promptlang/api/`)
+   - FastAPI REST endpoints
+   - Request/response validation
+   - Error handling and logging
+
+2. **Core Processing** (`src/promptlang/core/`)
+   - **Intent Router**: Identifies user intent and routes to appropriate processors
+   - **IR System**: Intermediate Representation for structured data
+   - **Compiler**: Translates IR to model-specific dialects
+   - **LLM Manager**: Abstraction layer for multiple LLM providers
+   - **Validator**: Ensures output quality and compliance
+   - **Cache System**: Multi-level caching for performance
+
+3. **Diagram Generation** (`src/promptlang/core/diagram/`)
+   - **Analyzer**: Extracts project context
+   - **Scorer**: Ranks diagram relevance
+   - **Pipeline**: Orchestrates diagram generation
+   - **Generator**: Creates Mermaid diagrams
+
+### Frontend Architecture (Next.js/React)
+
+Modern React application with TypeScript and Tailwind CSS:
+
+#### **Component Structure**
+```
+webapp/
+├── app/                    # Next.js app router
+├── components/             # React components
+│   ├── ui/                # Reusable UI components
+│   └── specialized/       # Feature-specific components
+└── lib/                   # Utility libraries
+```
+
+#### **Key Features**
+- **Responsive Design**: Mobile-first approach
+- **Dark Mode**: Theme switching support
+- **Real-time Updates**: Live diagram generation
+- **Copy/Export**: Multiple export options
+- **Error Handling**: Comprehensive error states
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Framework**: FastAPI
+- **Language**: Python 3.12+
+- **LLM Providers**: Groq, OpenRouter, HuggingFace
+- **Caching**: Redis (L2), Memory (L1)
+- **Validation**: Pydantic
+- **Testing**: pytest
+
+### Frontend
+- **Framework**: Next.js 14
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Custom component library
+- **State Management**: React hooks
+- **Diagrams**: Mermaid.js
+
+### Infrastructure
+- **Containerization**: Docker
+- **Orchestration**: Docker Compose
+- **Version Control**: Git
+- **Package Management**: pip (Python), npm (Node.js)
+
+## 📊 Data Flow
+
+### Generation Pipeline
+1. **Input Processing**: Parse and validate user input
+2. **Intent Recognition**: Identify generation intent (scaffold, debug, refactor)
+3. **IR Generation**: Create structured intermediate representation
+4. **Optimization**: Token usage and quality optimization
+5. **Compilation**: Convert to model-specific dialect
+6. **Validation**: Ensure output quality and compliance
+7. **Response**: Return structured results
+
+### Diagram Pipeline
+1. **Context Analysis**: Extract project information
+2. **Diagram Selection**: Score and rank relevant diagrams
+3. **Generation**: Create Mermaid diagram syntax
+4. **Validation**: Ensure diagram quality
+5. **Export**: Multiple format options
+
+## 🔧 Configuration
 
 ### Environment Variables
 ```bash
-# Required for Groq
-export GROQ_API_KEY="your_groq_api_key"
-export LLM_PROVIDER=groq
-export PROMPTLANG_PRIMARY_PROVIDER=groq
+# Backend
+GROQ_API_KEY=your_groq_api_key
+OPENROUTER_API_KEY=your_openrouter_key
+HUGGINGFACE_API_KEY=your_huggingface_key
+REDIS_URL=redis://localhost:6379
 
-# Optional
-export REDIS_URL=redis://localhost:6379/0  # For L2 caching
-export PYTHONPATH=./src
+# Frontend
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_MERMAID_CONFIG=your_mermaid_config
 ```
 
-### Using .env File
-```bash
-# Copy and configure
-cp .env.example .env
-nano .env  # Add your GROQ_API_KEY
+### Model Configuration
+```python
+# pyproject.toml
+[tool.promptlang]
+default_model = "groq"
+max_tokens = 4000
+cache_ttl = 3600
+validation_mode = "strict"
 ```
 
-## 🎨 Usage Examples
+## 🧪 Testing Strategy
 
-### Web Interface
-1. Open http://localhost:3000
-2. Enter: "Create a REST API for user management"
-3. Click "Generate"
-4. View results in tabs:
-   - **Output**: Generated scaffold
-   - **IR**: Intermediate representation  
-   - **Validation**: Compliance report
-   - **Metrics**: Performance data
+### Backend Tests
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: Pipeline testing
+- **Fixtures**: Sample data for testing
 
-### CLI Interface
-```bash
-# Generate with Groq
-promptlang generate "Create a FastAPI app" \
-  --model oss --budget 5000 --scaffold-mode full
+### Frontend Tests
+- **Component Tests**: React component testing
+- **E2E Tests**: Full user flows
+- **Visual Tests**: UI consistency
 
-# Validate IR
-promptlang validate tests/fixtures/scaffold_fastapi.json
+## 📦 Deployment
 
-# Optimize IR
+### Development
 promptlang optimize tests/fixtures/scaffold_fastapi.json --budget 3000
 ```
 
