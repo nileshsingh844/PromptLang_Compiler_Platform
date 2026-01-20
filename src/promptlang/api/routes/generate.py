@@ -72,6 +72,9 @@ async def generate(
             warnings=result.get("warnings", []),
             provenance=provenance_model,
             cache_hit=cache_hit,
+            knowledge_sources_used=result.get("knowledge_sources_used", []),
+            knowledge_top_k=result.get("knowledge_top_k", 0),
+            rag_enabled=result.get("rag_enabled", False),
         )
 
         return response

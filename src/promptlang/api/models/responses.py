@@ -39,6 +39,12 @@ class GenerateResponse(BaseModel):
     warnings: List[str]
     provenance: ProvenanceModel
     cache_hit: bool = Field(False, description="Whether result came from cache")
+    knowledge_sources_used: List[str] = Field(
+        default_factory=list,
+        description="Source URLs used for RAG context injection",
+    )
+    knowledge_top_k: int = Field(0, description="Configured top_k used for retrieval")
+    rag_enabled: bool = Field(False, description="Whether RAG retrieval/injection was enabled")
 
 
 class ValidateResponse(BaseModel):
@@ -55,3 +61,34 @@ class OptimizeResponse(BaseModel):
     optimized_ir: Dict[str, Any]
     warnings: List[str]
     estimated_tokens: int
+
+
+class PromptTemplatesResponse(BaseModel):
+    """Response model for /api/v1/templates endpoint."""
+
+    templates: List[str]
+
+
+class PromptPreviewResponse(BaseModel):
+    """Response model for /api/v1/preview endpoint."""
+
+    template_name: str
+    prompt: str
+
+
+class PromptJobResponse(BaseModel):
+    """Response model for /api/v1/prompt/{job_id} endpoint."""
+
+    job_id: str
+    template_name: str
+    prompt: str
+    ir: Dict[str, Any]
+    knowledge_card: Dict[str, Any]
+    enriched_context: Dict[str, Any]
+    sources: Dict[str, Any]
+    provenance: Dict[str, Any]
+
+
+class PromptGenerateResponse(PromptJobResponse):
+    """Response model emitted as an SSE 'result' event payload."""
+    pass

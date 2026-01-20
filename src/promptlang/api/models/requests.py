@@ -29,3 +29,29 @@ class OptimizeRequest(BaseModel):
     ir_json: dict = Field(..., description="IR JSON to optimize")
     token_budget: Optional[int] = Field(4000, ge=100, le=100000, description="Token budget")
     intent: Optional[str] = Field("scaffold", description="Intent for adaptive budgeting")
+
+
+class PromptGenerateRequest(BaseModel):
+    """Request model for /api/v1/generate endpoint (SSE)."""
+
+    input: str = Field(..., description="Human input text")
+    template_name: Optional[str] = Field(
+        "universal_cursor_prompt",
+        description="Template name to render",
+    )
+    repo_url: Optional[str] = Field(None, description="Optional GitHub repo URL")
+    urls: Optional[List[str]] = Field(default_factory=list, description="Optional list of URLs")
+    token_budget: Optional[int] = Field(4000, ge=100, le=100000, description="Token budget")
+
+
+class PromptPreviewRequest(BaseModel):
+    """Request model for /api/v1/preview endpoint."""
+
+    input: str = Field(..., description="Human input text")
+    template_name: Optional[str] = Field(
+        "universal_cursor_prompt",
+        description="Template name to render",
+    )
+    repo_url: Optional[str] = Field(None, description="Optional GitHub repo URL")
+    urls: Optional[List[str]] = Field(default_factory=list, description="Optional list of URLs")
+    token_budget: Optional[int] = Field(4000, ge=100, le=100000, description="Token budget")

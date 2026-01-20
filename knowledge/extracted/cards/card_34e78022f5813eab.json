@@ -1,0 +1,22 @@
+{
+  "project_name": "project",
+  "project_type": "api",
+  "problem": "**Project Blueprint**\n=====================\n\n### Project Overview\n\nThis project is a FastAPI REST API with user authentication. The API will be built using Python and the FastAPI framework, which is well-suited for building high-performance APIs.\n\n### Project Requirements\n\n* Create a REST API with user authentication\n* Use FastAPI as the framework\n* Use Python as the programming language\n* Use Pyd",
+  "solution": "Build a production-ready system with best practices.",
+  "features": [
+    "Core feature set"
+  ],
+  "tech_stack": {
+    "language": "determine",
+    "framework": "determine"
+  },
+  "architecture_style": "monolith",
+  "domain": "general",
+  "target_users": "end users",
+  "use_cases": [
+    "Primary workflow"
+  ],
+  "constraints": [],
+  "integrations": [],
+  "deployment_target": "cloud"
+}

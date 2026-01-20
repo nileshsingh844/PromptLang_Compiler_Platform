@@ -1,0 +1,20 @@
+{
+  "readme": "# Hello README",
+  "docs": {},
+  "package_manifest": {
+    "name": "repo"
+  },
+  "license": "",
+  "repo_metadata": {
+    "full_name": "org/repo",
+    "description": "desc",
+    "stars": 1,
+    "forks": 2,
+    "topics": [
+      "topic1"
+    ],
+    "html_url": "https://github.com/org/repo",
+    "default_branch": "main"
+  },
+  "file_structure": {}
+}

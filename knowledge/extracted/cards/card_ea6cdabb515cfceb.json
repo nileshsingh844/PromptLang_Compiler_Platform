@@ -1,0 +1,22 @@
+{
+  "project_name": "project",
+  "project_type": "api",
+  "problem": "## Project Blueprint\n\nThis project implements: Create a FastAPI REST API with user authentication\n\n## Directory Structure\n\n```\nproject/\n├── README.md\n├── requirements.txt\n└── src/\n    └── main.py\n```\n\n## File Contents\nFILE: README.md\n```lang\n# Create a FastAPI REST API with user authentication\n\nProject description and setup instructions.\n```\n\nFILE: src/main.py\n```lang\ndef main():\n    \"\"\"Main entry",
+  "solution": "Build a production-ready system with best practices.",
+  "features": [
+    "Core feature set"
+  ],
+  "tech_stack": {
+    "language": "determine",
+    "framework": "determine"
+  },
+  "architecture_style": "monolith",
+  "domain": "general",
+  "target_users": "end users",
+  "use_cases": [
+    "Primary workflow"
+  ],
+  "constraints": [],
+  "integrations": [],
+  "deployment_target": "cloud"
+}

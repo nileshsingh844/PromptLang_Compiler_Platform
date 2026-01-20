@@ -1,0 +1,65 @@
+{% set card = knowledge_card or {} %}
+{% set enriched = enriched_context or {} %}
+# CURSOR PROMPT (PRODUCTION-GRADE)
+
+## Role
+You are a senior engineer and architect. Implement production-ready code with strong defaults.
+
+## Project Summary
+- Name: {{ card.get('project_name','project') }}
+- Type: {{ card.get('project_type','') }}
+- Domain: {{ card.get('domain','general') }}
+
+## Problem
+{{ card.get('problem','') }}
+
+## Solution Overview
+{{ card.get('solution','') }}
+
+## Requirements
+{% if ir and ir.get('task') and ir.get('task', {}).get('description') %}
+{{ ir.get('task', {}).get('description') }}
+{% endif %}
+
+## Constraints
+{% if ir and ir.get('constraints') %}
+- Must have: {{ (ir.get('constraints', {}).get('must_have') or []) | join(', ') }}
+- Must avoid: {{ (ir.get('constraints', {}).get('must_avoid') or []) | join(', ') }}
+{% endif %}
+
+## Tech Stack
+{% if ir and ir.get('context') and ir.get('context', {}).get('stack') %}
+- Language: {{ ir.get('context', {}).get('stack', {}).get('language','') }}
+- Framework: {{ ir.get('context', {}).get('stack', {}).get('framework','') }}
+- Architecture: {{ ir.get('context', {}).get('stack', {}).get('architecture','') }}
+{% endif %}
+
+## Engineering Standards
+- Security: OWASP, secrets management, input validation, least privilege.
+- Testing: unit + integration tests, deterministic tests, CI-ready.
+- Observability: structured logging, metrics hooks, tracing-ready.
+- Documentation: clear README, setup, usage, and verification steps.
+
+## Best Practices (Retrieved)
+{% for item in (enriched.get('best_practices') or []) %}
+- {{ item.get('title','') }} ({{ item.get('url','') }})
+  {{ item.get('text','') }}
+{% endfor %}
+
+## Examples (Retrieved)
+{% for item in (enriched.get('examples') or []) %}
+- {{ item.get('title','') }} ({{ item.get('url','') }})
+  {{ item.get('text','') }}
+{% endfor %}
+
+## Domain Knowledge (Retrieved)
+{% for item in (enriched.get('domain_knowledge') or []) %}
+- {{ item.get('title','') }} ({{ item.get('url','') }})
+  {{ item.get('text','') }}
+{% endfor %}
+
+## Output Instructions
+- Generate a complete, runnable project.
+- Include file tree and full file contents.
+- Add setup + run + test commands.
+- Do not include secrets.

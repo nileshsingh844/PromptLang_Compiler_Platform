@@ -1,5 +1,5 @@
 graph TB
-    subgraph "authenticator System"
+    subgraph "FastAPI REST API with User Authentication System"
         API[API Gateway]
         APP[Application]
         DB[(Database)]

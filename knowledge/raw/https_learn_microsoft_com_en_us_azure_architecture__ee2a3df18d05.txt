@@ -1,0 +1,1 @@
+Azure Architecture Center Design solutions on Azure by using established patterns and practices. Azure Architecture Center is a catalog of solution ideas, example workloads, reference architectures, technology decision guides, and architecture guides for Azure workloads.

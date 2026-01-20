@@ -6,8 +6,17 @@ from typing import Dict, Optional
 from .config import LLMConfig, LLMProviderType
 from .base import LLMProvider, LLMResponse
 from .providers.groq_provider import GroqProvider
-from .providers.huggingface_provider import HuggingFaceProvider
-from .providers.openrouter_provider import OpenRouterProvider
+
+# Try to import other providers gracefully
+try:
+    from .providers.huggingface_provider import HuggingFaceProvider
+except ImportError:
+    HuggingFaceProvider = None
+
+try:
+    from .providers.openrouter_provider import OpenRouterProvider
+except ImportError:
+    OpenRouterProvider = None
 
 
 class LLMProviderManager:
@@ -22,9 +31,13 @@ class LLMProviderManager:
         """Initialize all configured providers"""
         provider_map = {
             LLMProviderType.GROQ: GroqProvider,
-            LLMProviderType.HUGGINGFACE: HuggingFaceProvider,
-            LLMProviderType.OPENROUTER: OpenRouterProvider,
         }
+        
+        # Add other providers if available
+        if HuggingFaceProvider is not None:
+            provider_map[LLMProviderType.HUGGINGFACE] = HuggingFaceProvider
+        if OpenRouterProvider is not None:
+            provider_map[LLMProviderType.OPENROUTER] = OpenRouterProvider
         
         for provider_type, provider_class in provider_map.items():
             try:

@@ -13,9 +13,21 @@ pytest>=7.4.0
 pytest-asyncio>=0.21.0
 pytest-cov>=4.1.0
 
+# Prompt-generation pipeline dependencies
+jinja2>=3.1.0
+PyGithub>=2.1.0
+playwright>=1.40.0
+beautifulsoup4>=4.12.0
+tiktoken>=0.5.0
+
 # Free LLM Provider Dependencies (added 2026-01-18)
 openai>=1.0.0              # For Groq and OpenRouter
 huggingface-hub>=0.20.0    # For HuggingFace inference
 aiohttp>=3.9.0             # For async HTTP
 tenacity>=8.2.0            # For retry logic
 python-dotenv>=1.0.0       # For .env file support
+
+# Runtime RAG dependencies (loading existing FAISS index)
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.0
+numpy>=1.24.0

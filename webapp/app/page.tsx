@@ -9,6 +9,7 @@ import { Loader2, BarChart3, Network, Download, Copy, Image } from 'lucide-react
 import MermaidDiagram from '@/components/mermaid-diagram';
 import { api, GenerateResponse, DiagramRequest, DiagramResponse } from '@/lib/api';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import Link from 'next/link';
 import { CopyButton } from '@/components/ui/copy-button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -131,6 +132,9 @@ export default function Home() {
               PromptLang Compiler Platform
             </h1>
             <div className="flex-1 flex justify-end">
+              <Link href="/prompt-generator">
+                <Button variant="outline">Prompt Generator</Button>
+              </Link>
               <ThemeToggle />
             </div>
           </div>
